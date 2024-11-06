@@ -140,7 +140,7 @@ class STCGRU(nn.Module):
             nn.ReLU(),
         )
 
-        self.fc_layer_1 = nn.Linear(58, 60)
+        self.fc_layer_1 = nn.Linear(58, 58)
         self.gru = nn.GRU(input_size=76, hidden_size=32,
                         num_layers=1, batch_first=True, bidirectional=True)
         self.flatten = nn.Flatten()
@@ -161,17 +161,19 @@ class STCGRU(nn.Module):
 
         # 改变维度以匹配 cnn_layer_2 的输入
         out = out.view(out.size(0), out.size(2), -1)
-
+        # print("out shape:", out.shape)  # 检查 out 形状
         out = self.cnn_layer_2(out)
-
+        # print("out shape:", out.shape)  # 检查 out 形状
         # 全连接层和GRU
         out = self.fc_layer_1(out)
+        # print("out shape:", out.shape)  # 检查 out 形状
         out = out.permute(0, 2, 1)
         h0 = torch.zeros(1 * 2, x.size(0), 32).to(device)
-
+        # print("out shape:", out.shape)  # 检查 out 形状
+        # print("h0 shape:", h0.shape)  # 检查 h0 形状    
         # GRU 层
         _, hn = self.gru(out, h0)
-
+        # print("hn shape:", hn.shape)
         # 展平和输出
         out = self.flatten(hn.permute(1, 0, 2))
         out = self.fc_layer_2(out)

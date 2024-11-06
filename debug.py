@@ -9,7 +9,7 @@ import time
 import joblib
 import model as NN
 
-seed = 34
+seed = 18
 total_fold = 10  # 10折
 '''深度学习超参数'''
 input_size = 16
@@ -18,7 +18,7 @@ num_layers_lstm = 1
 num_layers_bilstm = 2
 num_classes = 2
 batch_size = 64
-num_epochs = 5
+num_epochs = 30
 # learning_rate = 0.0003
 learning_rate = 0.001
 
