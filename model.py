@@ -140,7 +140,7 @@ class STCGRU(nn.Module):
             nn.ReLU(),
         )
 
-        self.fc_layer_1 = nn.Linear(58, 58)
+        self.fc_layer_1 = nn.Linear(128, 128)
         self.gru = nn.GRU(input_size=76, hidden_size=32,
                         num_layers=1, batch_first=True, bidirectional=True)
         self.flatten = nn.Flatten()

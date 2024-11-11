@@ -9,7 +9,7 @@ import time
 import joblib
 import model as NN
 
-seed = 18
+seed = 22
 total_fold = 10  # 10折
 '''深度学习超参数'''
 input_size = 16
@@ -17,15 +17,19 @@ hidden_size = 128
 num_layers_lstm = 1
 num_layers_bilstm = 2
 num_classes = 2
-batch_size = 64
-num_epochs = 30
+batch_size = 40
+num_epochs = 50
 # learning_rate = 0.0003
 learning_rate = 0.001
 
 start = time.perf_counter()
-name = locals()
 NN.seed_everything(seed)
-writer = SummaryWriter('./runs/' +'70hz_'+ str(seed))
+
+
+
+
+srate ="250"
+writer = SummaryWriter('./runs/' +srate+'hz_'+ str(seed))
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 def ensure_dir(directory):
@@ -33,9 +37,9 @@ def ensure_dir(directory):
         os.makedirs(directory)
 
 for i in range(total_fold):
-    train_data_combine = torch.load("EEGData/70hz/TrainData/train_data_"
+    train_data_combine = torch.load("EEGData/"+srate+"hz/TrainData/train_data_"
                                     + str(i + 1) + "_fold_with_seed_" + str(seed) + ".pth",weights_only=False)
-    valid_data_combine = torch.load("EEGData/70hz/ValidData/valid_data_"
+    valid_data_combine = torch.load("EEGData/"+srate+"hz/ValidData/valid_data_"
                                     + str(i + 1) + "_fold_with_seed_" + str(seed) + ".pth",weights_only=False)
     '''定义深度学习模型'''
     model = NN.STCGRU().to(device)
@@ -70,9 +74,9 @@ for i in range(total_fold):
         optimizer, lr_list = NN.model_training(writer, i, type='validation', epoch=epoch,
                                             loader=valid_loader, neural_network=model, criterion=criterion,
                                             optimizer=optimizer, scheduler=scheduler)
-    ensure_dir("stcgru/70hz")
+    ensure_dir("stcgru/"+srate+"hz")
     torch.save(model.state_dict(),
-            "stcgru/70hz/" +  str(i + 1) + "_fold_model_parameter_with_seed_" + str(seed) + ".pth")
+            "stcgru/"+srate+"hz/" +  str(i + 1) + "_fold_model_parameter_with_seed_" + str(seed) + ".pth")
     print("stcgru" + "模型第" + str(i + 1) + "次训练结果保存成功")
 end = time.perf_counter()
 print("训练及验证运行时间为", round(end - start), 'seconds')
