@@ -1,0 +1,14 @@
+# 忽略所有文件
+*.edf
+*.pth
+*.csv
+*.xlsx
+.idea/
+runs/
+__pycache__/
+# 不忽略目录本身，只忽略目录中的文件
+# !*/
+
+# 不忽略 .py 和 .ipynb 文件
+!.py
+!.ipynb
