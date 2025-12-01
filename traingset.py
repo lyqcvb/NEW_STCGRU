@@ -43,48 +43,6 @@ def seed_everything(seed):
     cudnn.benchmark = False  # if benchmark=True, deterministic will be False
     cudnn.deterministic = True
 
-# def model_training(tensorboard, i, type, loader, model, criterion, epoch=None, num_epochs=None, optimizer=None,scheduler=None):
-#     writer = tensorboard
-#     metric = Accumulator(3)
-#     lr_list = []
-#     for step, (data, labels) in enumerate(loader):
-#         # print(step)
-#         data = data.to(device)
-#         labels = labels.to(device)
-#         # 前向传播
-#         outputs = model(data)
-#         loss_step = criterion(outputs, labels)
-#         if type == 'train':
-#             # 反向传播
-#             optimizer.zero_grad()
-#             loss_step.mean().backward()
-#             optimizer.step()
-    
-#         # metric.add(float(loss_step.sum()), accuracy(outputs, labels), labels.numel())
-#         metric.add(loss_step.item() * len(labels), accuracy(outputs, labels), len(labels))
-#     # print(outputs.argmax(dim=1))
-#     acc_average = metric[1] / metric[2]
-#     loss_average = metric[0] / metric[2]
-#     if type == 'train':
-#         writer.add_scalars(type + '_loss', {type + str(i): loss_average}, epoch + 1)
-#         writer.add_scalars(type + '_accuracy', {type + str(i): acc_average}, epoch + 1)
-#         print("Epoch: [{:3d}/{}]".format(epoch + 1, num_epochs),
-#             "Train loss: {:.4f}".format(loss_average),
-#             "     "
-#             "Train accuracy: {:.4f}".format(acc_average))
-#         return model, optimizer
-#     if type == 'validation':
-#         # model.eval()
-#         scheduler.step()
-#         lr_list.append(optimizer.param_groups[0]['lr'])
-#         writer.add_scalars(type + '_loss', {type + str(i): loss_average}, epoch + 1)
-#         writer.add_scalars(type + '_accuracy', {type + str(i): acc_average}, epoch + 1)
-#         print("                 "
-#             "Validation loss: {:.4f}".format(loss_average),
-#             "Validation accuracy: {:.4f}".format(acc_average))
-#         return optimizer, lr_list
-
-# traingset.py
 
 def model_training(tensorboard, i, type, loader, model, criterion, epoch=None, num_epochs=None, optimizer=None,scheduler=None):
     # ==================== 核心修正 ====================

@@ -9,10 +9,8 @@ import time
 import joblib
 
 import traingset 
-import resnet
 import STCGRU 
 import RESGRU
-import PSDCnn
 
 # 定义脑区索引
 from itertools import combinations
@@ -42,7 +40,7 @@ regions = generate_combinations(regions, sizes=[1,2, 3, 4,5])
 
 
 # 动态获取变量值
-seed = 42
+seed = 66
 total_fold = 10  # 10折
 '''深度学习超参数'''
 num_classes = 2
@@ -51,7 +49,7 @@ num_epochs = 50
 learning_rate = 0.0001
 traingset.seed_everything(seed)
 partition = "prefrontal"
-model_name = "RESGRU_V1_tnb"
+model_name = "STCGRU_tnb"
 dataset_name = "EEGData"
 writer = SummaryWriter('./runs/' +model_name+'/'+partition+"_"+str(seed))
 num_channels = len(regions[partition])
@@ -67,22 +65,12 @@ for i in range(total_fold):
     valid_data_combine = torch.load(dataset_name+"/"+partition+"/ValidData/valid_data_"
                                     + str(i + 1) + "_fold_with_seed_" + str(seed) + ".pth",weights_only=False)
     '''定义深度学习模型'''
-    # model = STCGRU.model(tunnelNums=num_channels).to(device)
-    model = RESGRU.AblationModel_SingleResBlock().to(device)
-    # model = PSDCnn.PSDNet(input_channels=num_channels).to(device)
+    model = STCGRU.model(tunnelNums=num_channels).to(device)
+    # model = RESGRU.AblationModel_SingleResBlock().to(device)
     '''定义损失函数Loss 和 优化算法optimizer'''
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=0.05)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.8)
-    # In 2-train.py
-    # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-    #     optimizer,      # 绑定的优化器
-    #     mode='min',     # 'min' 模式，监控指标越小越好 (例如 loss)
-    #                     # 'max' 模式，监控指标越大越好 (例如 accuracy)
-    #     factor=0.1,     # 学习率衰减系数。新学习率 = 旧学习率 * factor
-    #     patience=10,    # “耐心值”，即能容忍多少个epoch内指标不优化
-    #     verbose=True    # 是否在调整学习率时在控制台打印提示信息
-    # )
     print('开始第%d次训练，共%d次' % (i + 1, total_fold))
     # 生成迭代器，根据小批量数据大小划分每批送入模型的数据集
     train_loader = DataLoader(dataset=train_data_combine,
